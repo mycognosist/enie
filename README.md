@@ -2,7 +2,7 @@
 
 Emit Network Interface Events (ENIE).
 
-`enie` utilises RTNETLINK to subscribe to network interface state-change events from the kernel. `enie` outputs events on `stdout`, allowing it to be coupled with other systems.
+`enie` utilises RTNETLINK to subscribe to network interface state-change events from the kernel. Events matching the user-specified interface (for example, `wlan0`) are printed to `stdout`, allowing `enie` to be coupled with other systems.
 
 ### Usage
 
@@ -12,7 +12,7 @@ Compile:
 
 Run:
 
-`./enie`
+`./enie wlan0`
 
 ### Output
 

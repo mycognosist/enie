@@ -8,6 +8,8 @@
 #include <sys/socket.h>
 #include <linux/rtnetlink.h>
 
+char* iface;
+
 // helper for parsing messages using netlink macros
 void parseRtattr(struct rtattr *tb[], int max, struct rtattr *rta, int len)
 {
@@ -24,8 +26,22 @@ void parseRtattr(struct rtattr *tb[], int max, struct rtattr *rta, int len)
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    // parse command line arguments
+    if( argc == 2  ) {
+        // assign interface-of-interest based on user input
+        iface = (char*)argv[1];
+    }
+    else if( argc > 2  ) {
+        printf("Too many arguments supplied. Expected a single argument representing the interface identifier, e.g. wlan0\n");
+        return 1;
+    }
+    else {
+        printf("Please provide an interface identifier for enie, e.g. enie wlan0\n");
+        return 1;
+    }
+    
     // create netlink socket
     int fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
 
@@ -147,27 +163,32 @@ int main()
                 inet_ntop(AF_INET, RTA_DATA(tba[IFA_LOCAL]), ifAddress, sizeof(ifAddress));
             }
 
-            // match on the receive message type & take action
-            switch (h->nlmsg_type) {
-                case RTM_DELADDR:
-                    fprintf(stdout, "3_%s\n", ifName);
-                    fflush(stdout);
-                    break;
+            // check ifName against user-supplied iface
+            // only take action if the message is relevant to the user
+            // ie. if iface == ifName
+            if (strcmp(ifName, iface) == 0) {
+                // match on the receive message type & take action
+                switch (h->nlmsg_type) {
+                    case RTM_DELADDR:
+                        fprintf(stdout, "3_%s\n", ifName);
+                        fflush(stdout);
+                        break;
 
-                case RTM_DELLINK:
-                    fprintf(stdout, "1_%s\n", ifName);
-                    fflush(stdout);
-                    break;
+                    case RTM_DELLINK:
+                        fprintf(stdout, "1_%s\n", ifName);
+                        fflush(stdout);
+                        break;
 
-                case RTM_NEWLINK:
-                    fprintf(stdout, "0_%s_%s_%s\n", ifName, ifUpp, ifRunn);
-                    fflush(stdout);
-                    break;
+                    case RTM_NEWLINK:
+                        fprintf(stdout, "0_%s_%s_%s\n", ifName, ifUpp, ifRunn);
+                        fflush(stdout);
+                        break;
 
-                case RTM_NEWADDR:
-                    fprintf(stdout, "2_%s_%s\n", ifName, ifAddress);
-                    fflush(stdout);
-                    break;
+                    case RTM_NEWADDR:
+                        fprintf(stdout, "2_%s_%s\n", ifName, ifAddress);
+                        fflush(stdout);
+                        break;
+                }
             }
 
             // align offsets by the message length (important!)
