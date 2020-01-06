@@ -36,7 +36,7 @@ Examples:
 
 ### Rationale
 
-I've been thinking about network interface state and the most efficient way to share it with a remote client. This is my attempt at experimentation with a push-based system, as well as a means of gaining deeper understanding of the Linux kernel and subsystems.
+I've been thinking about network interface state and the most efficient way to access and share it. This is my attempt at experimentation with a push-based system, as well as a means of gaining deeper understanding of the Linux kernel and subsystems.
 
 ### Resources
 
