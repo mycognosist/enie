@@ -170,22 +170,23 @@ int main(int argc, char *argv[])
                 // match on the receive message type & take action
                 switch (h->nlmsg_type) {
                     case RTM_DELADDR:
-                        fprintf(stdout, "3_%s\n", ifName);
-                        fflush(stdout);
-                        break;
-
-                    case RTM_DELLINK:
-                        fprintf(stdout, "1_%s\n", ifName);
+                        fprintf(stdout, "4_%s_%s\n", ifName, "IP_DELETED");
                         fflush(stdout);
                         break;
 
                     case RTM_NEWLINK:
-                        fprintf(stdout, "0_%s_%s_%s\n", ifName, ifUpp, ifRunn);
+                        if (strcmp(ifUpp, "DOWN") == 0) {
+                            fprintf(stdout, "2_%s_%s\n", ifName, "DOWN");
+                        } else if (strcmp(ifRunn, "RUNNING") == 0){
+                            fprintf(stdout, "0_%s_%s_%s\n", ifName, ifUpp, "CONNECTED");
+                        } else {
+                            fprintf(stdout, "1_%s_%s_%s\n", ifName, ifUpp, "DISCONNECTED");
+                        }
                         fflush(stdout);
                         break;
 
                     case RTM_NEWADDR:
-                        fprintf(stdout, "2_%s_%s\n", ifName, ifAddress);
+                        fprintf(stdout, "3_%s_%s_%s\n", ifName, "IP_ASSIGNED", ifAddress);
                         fflush(stdout);
                         break;
                 }

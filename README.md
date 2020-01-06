@@ -21,18 +21,20 @@ Events are prefixed by an integer denoting event type and followed by the interf
 States:
 
 ```
- 0 - UP
- 1 - DOWN
- 2 - IP_ADD
- 3 - IP_DEL
+ 0 - UP_CONNECTED
+ 1 - UP_DISCONNECTED
+ 2 - DOWN
+ 3 - IP_ASSIGNED
+ 4 - IP_DELETED
 ```
 
 Examples:
 
-`0_wlan0_UP_RUNNING` or `0_wlan0_UP_NOT_RUNNING`  
-`1_wlan0`  
-`2_wlan0_192.168.1.12`  
-`3_wlan0`
+`0_wlan0_UP_CONNECTED`  
+`1_wlan0_UP_DISCONNECTED`  
+`2_wlan0_DOWN`  
+`3_wlan0_IP_ASSIGNED_192.168.1.12`  
+`4_wlan0_IP_DELETED`
 
 ### Rationale
 
